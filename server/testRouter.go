@@ -14,7 +14,6 @@ import (
 )
 
 var (
-	m               = make(map[string]string)
 	secretKey       = "secretKey"
 	ErrInvalidToken = errors.New("invalid token")
 	ErrExpiredToken = errors.New("expired Token")
@@ -47,19 +46,10 @@ func tokenValidatorMiddleware(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "missing secret key"})
 	}
 
-	payload, err := verifyToken(secretHeader)
+	_, err := verifyToken(secretHeader)
 	fmt.Println(err)
 	if err != nil {
-		// if verr := payload.Valid(); verr != nil {
-		// 	return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Expire token"})
-		// } else {}
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Invalid token"})
-
-	}
-
-	verr := payload.Valid()
-	if verr != nil {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Expired token"})
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": " " + err.Error()})
 
 	}
 
@@ -83,8 +73,6 @@ func createToken(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
-
-	m["token"] = t
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"token": t})
 }
