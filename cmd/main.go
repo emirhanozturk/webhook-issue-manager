@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	server.TestRouter()
+	server.Router()
 }

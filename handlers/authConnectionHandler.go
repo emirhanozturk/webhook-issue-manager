@@ -1,17 +1,17 @@
 package handlers
 
 import (
-	"github.com/boltdb/bolt"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
-type TestHandler struct {
-	DB *bolt.DB
+type TestHandlers struct {
+	DB *gorm.DB
 }
 
-func New(db *bolt.DB) *Handler {
-	return &Handler{
-		DB: db,
+func (h *Handler) NewTestConnectionHandlers() *IssueHandlers {
+	return &IssueHandlers{
+		DB: h.DB,
 	}
 }
 

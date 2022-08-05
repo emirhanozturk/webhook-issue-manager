@@ -1,13 +1,15 @@
 package handlers
 
-import "github.com/boltdb/bolt"
+import (
+	"gorm.io/gorm"
+)
 
 type Handler struct {
-	DB *bolt.DB
+	DB *gorm.DB
 }
 
-func (h *Handler) NewTestConnectionHandlers() *IssueHandlers {
-	return &IssueHandlers{
-		DB: h.DB,
+func New(db *gorm.DB) *Handler {
+	return &Handler{
+		DB: db,
 	}
 }

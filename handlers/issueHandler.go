@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"github.com/boltdb/bolt"
+	"gorm.io/gorm"
 )
 
 type IssueHandlers struct {
-	DB *bolt.DB
+	DB *gorm.DB
 }

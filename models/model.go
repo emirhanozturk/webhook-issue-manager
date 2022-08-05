@@ -14,3 +14,8 @@ type User struct {
 	UserName string `json:"username"`
 	Email    string `json:"email"`
 }
+
+type Token struct {
+	TokenID  string `gorm:"primaryKey"`
+	TokenStr string
+}

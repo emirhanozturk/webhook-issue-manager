@@ -10,7 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/google/uuid"
 	handler "github.com/webhook-issue-manager/handlers"
-	db "github.com/webhook-issue-manager/storage/bolt"
+	db "github.com/webhook-issue-manager/storage/postgres"
 )
 
 var (
@@ -19,7 +19,7 @@ var (
 	ErrExpiredToken = errors.New("expired Token")
 )
 
-func TestRouter() *fiber.App {
+func Router() *fiber.App {
 
 	app := fiber.New()
 	handler := handler.New(db.Inıt())
@@ -46,11 +46,21 @@ func tokenValidatorMiddleware(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "missing secret key"})
 	}
 
-	_, err := verifyToken(secretHeader)
+	payload, err := verifyToken(secretHeader)
 	fmt.Println(err)
 	if err != nil {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": " " + err.Error()})
+	}
 
+	handler := handler.New(db.Inıt())
+	tokenHandler := handler.NewTokenHandler()
+	token, err := tokenHandler.GetToken(payload.ID.String())
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	if token.TokenStr == secretHeader {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Succesfull"})
 	}
 
 	return c.Next()
@@ -73,6 +83,10 @@ func createToken(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
+	var tokenIDStr = tokenID.String()
+	handler := handler.New(db.Inıt())
+	tokenHandler := handler.NewTokenHandler()
+	tokenHandler.AddToken(tokenIDStr, t)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"token": t})
 }
@@ -100,7 +114,6 @@ func verifyToken(token string) (*Payload, error) {
 	if !ok {
 		return nil, ErrInvalidToken
 	}
-
 	return payload, nil
 
 }
