@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/google/uuid"
 	handler "github.com/webhook-issue-manager/handlers"
+	"github.com/webhook-issue-manager/model"
 	db "github.com/webhook-issue-manager/storage/postgres"
 )
 
@@ -91,7 +92,7 @@ func createToken(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"token": t})
 }
 
-func verifyToken(token string) (*Payload, error) {
+func verifyToken(token string) (*model.Payload, error) {
 
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
@@ -101,7 +102,7 @@ func verifyToken(token string) (*Payload, error) {
 		return []byte(secretKey), nil
 	}
 
-	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, keyFunc)
+	jwtToken, err := jwt.ParseWithClaims(token, &model.Payload{}, keyFunc)
 	if err != nil {
 		verr, ok := err.(*jwt.ValidationError)
 		if ok && errors.Is(verr.Inner, ErrExpiredToken) {
@@ -110,23 +111,10 @@ func verifyToken(token string) (*Payload, error) {
 		return nil, ErrInvalidToken
 	}
 
-	payload, ok := jwtToken.Claims.(*Payload)
+	payload, ok := jwtToken.Claims.(*model.Payload)
 	if !ok {
 		return nil, ErrInvalidToken
 	}
 	return payload, nil
 
-}
-
-type Payload struct {
-	ID        uuid.UUID `json:"id"`
-	IssuedAt  time.Time `json:"issued_at"`
-	ExpiredAt time.Time `json:"expired_at"`
-}
-
-func (payload *Payload) Valid() error {
-	if time.Now().After(payload.ExpiredAt) {
-		return ErrExpiredToken
-	}
-	return nil
 }

@@ -1,0 +1,5 @@
+port: 5432
+hostname: localhost
+postgres_user: postgres
+postgres_password: 12345
+postgres_database: issue

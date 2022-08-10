@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	model "github.com/webhook-issue-manager/models"
+	"github.com/webhook-issue-manager/model"
 	"gorm.io/gorm"
 )
 
