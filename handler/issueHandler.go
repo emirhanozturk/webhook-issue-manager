@@ -28,16 +28,17 @@ func NewIssueHandler() IssueHandler {
 }
 
 func (*issuehandler) CreateIssue(c *fiber.Ctx) error {
-	var issue *model.Issue
+	var issue model.Issue
 
+	//err := c.BodyParser(&issue)
 	err := json.Unmarshal(c.Body(), &issue)
 	if err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": err.Error()})
 	}
 
 	issue.Id = fmt.Sprintf("%d", time.Now().UnixNano())
 
-	err = issueService.CreateIssue(issue)
+	err = issueService.CreateIssue(&issue)
 	if err != nil {
 		return err
 	}

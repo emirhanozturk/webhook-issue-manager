@@ -11,7 +11,7 @@ var (
 
 type IssueService interface {
 	CreateIssue(issue *model.Issue) error
-	GetDetails(issueId string) (*model.Issue, error)
+	GetDetails(issueId string) (*model.IssueDTO, error)
 	UpdateStatus(issueId string, status string) error
 }
 
@@ -29,12 +29,12 @@ func (*issueservice) CreateIssue(issue *model.Issue) error {
 	return nil
 }
 
-func (*issueservice) GetDetails(issueId string) (*model.Issue, error) {
-	issue, err := issueRepo.GetDetails(issueId)
+func (*issueservice) GetDetails(issueId string) (*model.IssueDTO, error) {
+	issueDTO, err := issueRepo.GetDetails(issueId)
 	if err != nil {
 		return nil, err
 	}
-	return issue, nil
+	return issueDTO, nil
 }
 
 func (*issueservice) UpdateStatus(issueId string, status string) error {
