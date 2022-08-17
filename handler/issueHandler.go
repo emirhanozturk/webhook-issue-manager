@@ -50,7 +50,7 @@ func (*issuehandler) CreateIssue(c *fiber.Ctx) error {
 	issue := model.Issue{Id: issueId,
 		Status: issueReq.Status, Title: issueReq.Title, Fp: issueReq.Fp, Link: issueReq.Link, Name: issueReq.Name,
 		Path: issueReq.Path, Severity: issueReq.Severity, ProjectName: issueReq.ProjectName,
-		TemplateMD: issueReq.TemplateMD, AssigneeId: assigneeId, Labels: issueReq.Labels}
+		TemplateMD: issueReq.TemplateMD, AssigneeId: assigneeId, Labels: issueReq.Labels, VulnDetail: model.JSONB{issueReq.VulnDetail}}
 
 	err = issueService.CreateIssue(&issue)
 	if err != nil {

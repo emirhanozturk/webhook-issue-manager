@@ -1,6 +1,13 @@
 package model
 
-import "github.com/lib/pq"
+import (
+	"encoding/json"
+	"errors"
+
+	"database/sql/driver"
+
+	"github.com/lib/pq"
+)
 
 type IssueReq struct {
 	Id          string         `json:"id" gorm:"primaryKey"`
@@ -15,8 +22,10 @@ type IssueReq struct {
 	ProjectName string         `json:"project_name"`
 	Assignee    Assignee       `json:"assignee"`
 	Labels      pq.StringArray `json:"labels" gorm:"type:text[]"`
-	//VulnDetail  interface{}    `json:"vulnerability"`
+	VulnDetail  interface{}    `json:"vulnerability"`
 }
+
+type JSONB []interface{}
 
 type Issue struct {
 	Id          string         `json:"id" gorm:"primaryKey"`
@@ -31,7 +40,7 @@ type Issue struct {
 	ProjectName string         `json:"project_name"`
 	AssigneeId  string         `json:"assignee_id"`
 	Labels      pq.StringArray `json:"labels" gorm:"type:text[]"`
-	//VulnDetail  interface{}    `json:"vulnerability"`
+	VulnDetail  JSONB          `json:"vulnerability" gorm:"type:jsonb"`
 }
 
 type IssueDTO struct {
@@ -41,4 +50,18 @@ type IssueDTO struct {
 	TemplateMD string   `json:"template_md"`
 	Assignee   Assignee `json:"assignee"  gorm:"foreignKey:AssigneeID;references:Id"`
 	Labels     []string `json:"labels"`
+}
+
+// Value Marshal
+func (a JSONB) Value() (driver.Value, error) {
+	return json.Marshal(a)
+}
+
+// Scan Unmarshal
+func (a *JSONB) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+	return json.Unmarshal(b, &a)
 }
