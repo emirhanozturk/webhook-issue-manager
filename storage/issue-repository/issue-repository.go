@@ -22,7 +22,7 @@ func NewIssueRepository() IssueRepository {
 
 func (*issuerepository) AddIssue(issue *model.Issue) error {
 	db := postgres.Inıt()
-	if err := db.Model(&model.Issue{}).Create(issue); err.Error != nil {
+	if err := db.Create(issue); err.Error != nil {
 		return err.Error
 	}
 

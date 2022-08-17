@@ -21,8 +21,8 @@ func NewIssueService() IssueService {
 	return &issueservice{}
 }
 
-func (*issueservice) CreateIssue(issue *model.Issue) error {
-	err := issueRepo.AddIssue(issue)
+func (*issueservice) CreateIssue(Issue *model.Issue) error {
+	err := issueRepo.AddIssue(Issue)
 	if err != nil {
 		return err
 	}

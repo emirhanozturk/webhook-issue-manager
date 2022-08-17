@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/webhook-issue-manager/model"
 	"github.com/webhook-issue-manager/service"
 )
 
 var (
-	issueService service.IssueService = service.NewIssueService()
+	issueService    service.IssueService    = service.NewIssueService()
+	assigneeService service.AssigneeService = service.NewAssigneeService()
 )
 
 type IssueHandler interface {
@@ -28,15 +30,27 @@ func NewIssueHandler() IssueHandler {
 }
 
 func (*issuehandler) CreateIssue(c *fiber.Ctx) error {
-	var issue model.Issue
+	var issueReq *model.IssueReq
+	err := json.Unmarshal(c.Body(), &issueReq)
 
-	//err := c.BodyParser(&issue)
-	err := json.Unmarshal(c.Body(), &issue)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": err.Error()})
 	}
 
-	issue.Id = fmt.Sprintf("%d", time.Now().UnixNano())
+	assigneeID, _ := uuid.NewRandom()
+
+	assignee := model.Assignee{Id: assigneeID.String(), Email: issueReq.Assignee.Email, UserName: issueReq.Assignee.UserName}
+
+	assigneeId, err := assigneeService.CreateAssignee(&assignee)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": err.Error()})
+	}
+	issueId := fmt.Sprintf("%d", time.Now().UnixNano())
+	issue := model.Issue{Id: issueId,
+		Status: issueReq.Status, Title: issueReq.Title, Fp: issueReq.Fp, Link: issueReq.Link, Name: issueReq.Name,
+		Path: issueReq.Path, Severity: issueReq.Severity, ProjectName: issueReq.ProjectName,
+		TemplateMD: issueReq.TemplateMD, AssigneeId: assigneeId, Labels: issueReq.Labels}
 
 	err = issueService.CreateIssue(&issue)
 	if err != nil {

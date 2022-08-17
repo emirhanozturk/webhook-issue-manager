@@ -11,13 +11,13 @@ import (
 )
 
 func Inıt() *gorm.DB {
-	config := config.Config("./config.yaml")
+	config := config.Config("../config.yaml")
 	host := config.Hostname
 	port := config.Port
 	database := config.Database
 	user := config.User
 	password := config.Password
-	dsn := fmt.Sprintf("host=%s user=%s password= %d dbname=%s port= %d sslmode=disable", host, user, password, database, port)
+	dsn := fmt.Sprintf("host=%s user=%s password=%d dbname=%s port=%d sslmode=disable", host, user, password, database, port)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
