@@ -11,7 +11,7 @@ import (
 )
 
 func Inıt() *gorm.DB {
-	config := config.Config("../config.yaml")
+	config := config.Config("./config.yaml")
 	host := config.Hostname
 	port := config.Port
 	database := config.Database

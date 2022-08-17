@@ -11,6 +11,7 @@ var (
 
 type AssigneeService interface {
 	CreateAssignee(assignee *model.Assignee) (string, error)
+	GetAssignee(assigneeId string) (*model.Assignee, error)
 }
 
 type assigneeservice struct{}
@@ -26,4 +27,13 @@ func (*assigneeservice) CreateAssignee(assignee *model.Assignee) (string, error)
 		return "", err
 	}
 	return assign.Id, nil
+}
+
+// GetAssignee implements AssigneeService
+func (*assigneeservice) GetAssignee(assigneeId string) (*model.Assignee, error) {
+	assignee, err := assigneerepo.GetAssignee(assigneeId)
+	if err != nil {
+		return nil, err
+	}
+	return assignee, nil
 }

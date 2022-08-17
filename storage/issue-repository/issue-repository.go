@@ -10,7 +10,7 @@ import (
 
 type IssueRepository interface {
 	AddIssue(issue *model.Issue) error
-	GetDetails(issueId string) (*model.IssueDTO, error)
+	GetDetails(issueId string) (*model.Issue, error)
 	UpdateStatus(issueId string, status string) error
 }
 
@@ -30,17 +30,17 @@ func (*issuerepository) AddIssue(issue *model.Issue) error {
 	return nil
 }
 
-func (*issuerepository) GetDetails(issueId string) (*model.IssueDTO, error) {
-	var issueDTO model.IssueDTO
+func (*issuerepository) GetDetails(issueId string) (*model.Issue, error) {
+	var issue model.Issue
 	db := postgres.Inıt()
 	if issueId == "" {
 		fmt.Println("TokenID can not be empty")
 	}
-	result := db.Where("id = ?", issueId).Find(&issueDTO)
+	result := db.Where("id = ?", issueId).Find(&issue)
 	if result.Error != nil {
 		return nil, errors.New("record is not found")
 	}
-	return &issueDTO, nil
+	return &issue, nil
 }
 
 func (*issuerepository) UpdateStatus(issueId string, status string) error {

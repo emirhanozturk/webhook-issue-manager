@@ -27,7 +27,7 @@ func Router() *fiber.App {
 		issueGroup.Use(tokenHandler.TokenValidatorMiddleware)
 
 		issueGroup.Post("", issueHandler.CreateIssue)
-		issueGroup.Get("/getdetails/:id", issueHandler.GetDetails)
+		issueGroup.Get("/:id", issueHandler.GetDetails)
 		issueGroup.Patch("/:id", issueHandler.Update)
 
 	}

@@ -67,12 +67,19 @@ func (*issuehandler) GetDetails(c *fiber.Ctx) error {
 		return err
 	}
 
-	issueBytes, err := json.Marshal(issue)
+	assignee, err := assigneeService.GetAssignee(issue.AssigneeId)
 	if err != nil {
 		return err
 	}
 
-	return c.Status(http.StatusOK).JSON(fiber.Map{"Issue": string(issueBytes)})
+	issueDTO := model.IssueDTO{Id: issue.Id, Status: issue.Status, Title: issue.Title,
+		TemplateMD: issue.TemplateMD, Assignee: model.Assignee{Email: assignee.Email, UserName: assignee.UserName}, Labels: issue.Labels}
+
+	if err != nil {
+		return err
+	}
+
+	return c.Status(http.StatusOK).JSON(issueDTO)
 }
 
 func (*issuehandler) Update(c *fiber.Ctx) error {
