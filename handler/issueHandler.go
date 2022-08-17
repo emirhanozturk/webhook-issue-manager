@@ -86,7 +86,7 @@ func (*issuehandler) Update(c *fiber.Ctx) error {
 	var issue *model.Issue
 	issueId := c.Params("id")
 
-	err := json.Unmarshal(c.Body(), issue)
+	err := json.Unmarshal(c.Body(), &issue)
 	if err != nil {
 		return err
 	}
@@ -96,5 +96,5 @@ func (*issuehandler) Update(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "Issue updated"})
+	return c.Status(http.StatusOK).JSON(fiber.Map{"id": issueId, "status": issue.Status})
 }
