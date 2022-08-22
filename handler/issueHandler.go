@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"encoding/json"
@@ -13,14 +13,16 @@ import (
 )
 
 var (
-	issueService    service.IssueService    = service.NewIssueService()
-	assigneeService service.AssigneeService = service.NewAssigneeService()
+	issueService      service.IssueService      = service.NewIssueService()
+	assigneeService   service.AssigneeService   = service.NewAssigneeService()
+	attachmentService service.AttachmentService = service.NewAttachmentService()
 )
 
 type IssueHandler interface {
 	CreateIssue(c *fiber.Ctx) error
 	GetDetails(c *fiber.Ctx) error
 	Update(c *fiber.Ctx) error
+	AddAttachment(c *fiber.Ctx) error
 }
 
 type issuehandler struct{}
@@ -97,4 +99,22 @@ func (*issuehandler) Update(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(fiber.Map{"id": issueId, "status": issue.Status})
+}
+
+// AddAttachment implements AttachmentHandler
+func (*issuehandler) AddAttachment(c *fiber.Ctx) error {
+	var attachment *model.Attachment
+	issueId := c.Params("id")
+
+	err := json.Unmarshal(c.Body(), &attachment)
+	if err != nil {
+		return err
+	}
+	attachment.IssueId = issueId
+	err = attachmentService.CreateAttachment(attachment)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "attachments added succesfully"})
 }

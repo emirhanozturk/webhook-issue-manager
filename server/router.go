@@ -7,9 +7,10 @@ import (
 )
 
 var (
-	tokenHandler handler.TokenHandler = handler.NewTokenHandler()
-	testHandler  handler.TestHandler  = handler.NewTestConnectionHandlers()
-	issueHandler handler.IssueHandler = handler.NewIssueHandler()
+	tokenHandler   handler.TokenHandler    = handler.NewTokenHandler()
+	testHandler    handler.TestHandler     = handler.NewTestConnectionHandlers()
+	issueHandler   handler.IssueHandler    = handler.NewIssueHandler()
+	commentHandler handler.CommentsHandler = handler.NewCommentHandler()
 )
 
 func Router() *fiber.App {
@@ -29,6 +30,11 @@ func Router() *fiber.App {
 		issueGroup.Post("", issueHandler.CreateIssue)
 		issueGroup.Get("/:id", issueHandler.GetDetails)
 		issueGroup.Patch("/:id", issueHandler.Update)
+		issueGroup.Post("/:id/attachments", issueHandler.AddAttachment)
+
+		commentGroup := issueGroup.Group("/:id/comments")
+		commentGroup.Post("", commentHandler.CreateComment)
+		commentGroup.Get("", commentHandler.GetComments)
 
 	}
 

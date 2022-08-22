@@ -23,7 +23,7 @@ func Inıt() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&model.Token{}, &model.Assignee{}, &model.Issue{})
+	db.AutoMigrate(&model.Token{}, &model.Assignee{}, &model.Issue{}, model.Comment{})
 
 	return db
 }
