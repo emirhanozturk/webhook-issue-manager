@@ -8,7 +8,7 @@ import (
 )
 
 type AssigneeRepository interface {
-	AddAssignee(assignee *model.Assignee) (*model.Assignee, error)
+	AddAssignee(assignee *model.Assignee) (string, error)
 	GetAssignee(assigneeId string) (*model.Assignee, error)
 }
 
@@ -19,20 +19,20 @@ func NewAssigneeHandler() AssigneeRepository {
 }
 
 // AddAssignee implements AssigneeRepository
-func (*assignerepository) AddAssignee(assignee *model.Assignee) (*model.Assignee, error) {
+func (*assignerepository) AddAssignee(assignee *model.Assignee) (string, error) {
 	db := postgres.Inıt()
 	db.Create(assignee)
 	db.Save(assignee)
-	return assignee, nil
+	return assignee.Id, nil
 }
 
 // GetAssignee implements AssigneeRepository
 func (*assignerepository) GetAssignee(assigneeId string) (*model.Assignee, error) {
-	var assignee model.Assignee
+	var assignee *model.Assignee
 	db := postgres.Inıt()
 	result := db.Where("id = ?", assigneeId).Find(&assignee)
 	if result.Error != nil {
 		return nil, errors.New("record is not found")
 	}
-	return &assignee, nil
+	return assignee, nil
 }

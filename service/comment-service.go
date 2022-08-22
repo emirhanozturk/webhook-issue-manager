@@ -1,6 +1,9 @@
 package service
 
 import (
+	"time"
+
+	"github.com/google/uuid"
 	"github.com/webhook-issue-manager/model"
 	commentrepository "github.com/webhook-issue-manager/storage/comment-repository"
 )
@@ -10,7 +13,7 @@ var (
 )
 
 type CommentService interface {
-	CreateComment(comment *model.Comment) error
+	CreateComment(commentReq *model.CommentReq) error
 	GetComment(issueId string) (*model.CommentDTOArray, error)
 }
 
@@ -21,8 +24,17 @@ func NewCommentService() CommentService {
 }
 
 // CreateComment implements CommentService
-func (*commentservice) CreateComment(comment *model.Comment) error {
-	err := commentrepo.AddComments(comment)
+func (*commentservice) CreateComment(commentReq *model.CommentReq) error {
+	id, _ := uuid.NewRandom()
+	assignee := &model.Assignee{Id: id.String(), Email: commentReq.Assignee.Email, UserName: commentReq.Assignee.UserName}
+	assigneeId, err := assigneerepo.AddAssignee(assignee)
+	if err != nil {
+		return err
+	}
+	commentId, _ := uuid.NewRandom()
+	comment := &model.Comment{Id: commentId.String(), IssueId: commentReq.IssueId, CreatedAt: time.Now(), Body: commentReq.Body, AssigneeId: assigneeId}
+
+	err = commentrepo.AddComments(comment)
 	if err != nil {
 		return err
 	}

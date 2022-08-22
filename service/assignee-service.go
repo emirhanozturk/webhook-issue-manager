@@ -22,11 +22,11 @@ func NewAssigneeService() AssigneeService {
 
 // CreateAssignee implements AssigneeService
 func (*assigneeservice) CreateAssignee(assignee *model.Assignee) (string, error) {
-	assign, err := assigneerepo.AddAssignee(assignee)
+	assigneId, err := assigneerepo.AddAssignee(assignee)
 	if err != nil {
 		return "", err
 	}
-	return assign.Id, nil
+	return assigneId, nil
 }
 
 // GetAssignee implements AssigneeService

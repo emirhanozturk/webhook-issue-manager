@@ -24,10 +24,10 @@ func Config(file string) *model.Config {
 }
 
 func MinioConnection() (*minio.Client, error) {
-	endpoint := "http://127.0.0.1:9000"
+	endpoint := "192.168.2.224:9000"
 	accessKeyID := "minioadmin"
 	secretAccessKey := "minioadmin"
-	useSSL := true
+	useSSL := false
 
 	// Initialize minio client object.
 	minioClient, err := minio.New(endpoint, &minio.Options{

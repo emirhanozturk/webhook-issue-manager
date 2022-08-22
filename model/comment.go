@@ -6,7 +6,7 @@ type CommentReq struct {
 	Id       string   `json:"id" gorm:"primaryKey"`
 	IssueId  string   `json:"issue_id"`
 	Body     string   `json:"body"`
-	Assignee Assignee `json:"assignee"`
+	Assignee Assignee `json:"author"`
 }
 type Comment struct {
 	Id         string    `json:"id" gorm:"primaryKey"`

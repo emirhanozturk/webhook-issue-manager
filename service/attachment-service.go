@@ -10,7 +10,7 @@ var (
 )
 
 type AttachmentService interface {
-	CreateAttachment(attachment *model.Attachment) error
+	CreateAttachment(attachmentReq *model.AttachmentReq) error
 }
 
 type attachmentservice struct{}
@@ -19,8 +19,8 @@ func NewAttachmentService() AttachmentService {
 	return &attachmentservice{}
 }
 
-func (*attachmentservice) CreateAttachment(attachment *model.Attachment) error {
-	err := attachmentrepo.AddAttachment(attachment)
+func (*attachmentservice) CreateAttachment(attachmentReq *model.AttachmentReq) error {
+	err := attachmentrepo.AddAttachment(attachmentReq)
 	if err != nil {
 		return err
 	}

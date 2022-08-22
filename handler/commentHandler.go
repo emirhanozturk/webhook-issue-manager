@@ -3,10 +3,8 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 	"github.com/webhook-issue-manager/model"
 	"github.com/webhook-issue-manager/service"
 )
@@ -34,16 +32,8 @@ func (*commentshandler) CreateComment(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusBadGateway).JSON(fiber.Map{"message": "cannot unmarshal body"})
 	}
-	id, _ := uuid.NewRandom()
-	assignee := &model.Assignee{Id: id.String(), Email: commentReq.Assignee.Email, UserName: commentReq.Assignee.UserName}
-	assigneeId, err := assigneeService.CreateAssignee(assignee)
-	if err != nil {
-		return err
-	}
-	commentId, _ := uuid.NewRandom()
-	comment := &model.Comment{Id: commentId.String(), IssueId: issueId, CreatedAt: time.Now(), Body: commentReq.Body, AssigneeId: assigneeId}
-
-	commentservice.CreateComment(comment)
+	commentReq.IssueId = issueId
+	commentservice.CreateComment(commentReq)
 	return nil
 }
 
