@@ -49,7 +49,7 @@ func (*commentservice) GetComment(issueId string) (*model.CommentDTOArray, error
 	}
 	var commentDtoArray model.CommentDTOArray
 	for _, comment := range comments {
-		assignee, err := assigneerepo.GetAssignee(issueId)
+		assignee, err := assigneerepo.GetAssignee(comment.AssigneeId)
 		if err != nil {
 			return nil, err
 		}

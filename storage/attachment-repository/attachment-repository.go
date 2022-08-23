@@ -39,7 +39,8 @@ func (*attachmentrepository) AddAttachment(attachmentReq *model.AttachmentReq) e
 	base64.StdEncoding.Decode(base64Text, []byte(attachmentReq.Base64Content))
 
 	permissions := 0644
-	file := fmt.Sprintf("%s_%s.txt", attachmentReq.Title, attachmentReq.IssueId)
+	fileP := "C:/code/minio"
+	file := fmt.Sprintf("%s/%s_%s.txt", fileP, attachmentReq.Title, attachmentReq.IssueId)
 	err = ioutil.WriteFile(file, base64Text, fs.FileMode(permissions))
 	if err != nil {
 		return err
@@ -61,7 +62,7 @@ func (*attachmentrepository) AddAttachment(attachmentReq *model.AttachmentReq) e
 		log.Printf("Successfully created %s\n", bucketName)
 	}
 
-	objectName := file
+	objectName := attachmentReq.Title + "_" + attachmentReq.IssueId + ".txt"
 	filePath := file
 	contentType := "text/plain"
 
