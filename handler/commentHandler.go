@@ -26,15 +26,18 @@ func NewCommentHandler() CommentsHandler {
 
 // CreateComment implements CommentsHandler
 func (*commentshandler) CreateComment(c *fiber.Ctx) error {
-	var commentReq *model.CommentReq
+	var commentReqArray *model.CommentReqArray
 	issueId := c.Params("id")
-	err := json.Unmarshal(c.Body(), &commentReq)
+	err := json.Unmarshal(c.Body(), &commentReqArray)
 	if err != nil {
 		return c.Status(http.StatusBadGateway).JSON(fiber.Map{"message": "cannot unmarshal body"})
 	}
-	commentReq.IssueId = issueId
-	commentservice.CreateComment(commentReq)
-	return nil
+	for _, commentReq := range commentReqArray.CommentReq {
+
+		commentReq.IssueId = issueId
+		commentservice.CreateComment(&commentReq)
+	}
+	return c.Status(http.StatusOK).JSON(fiber.Map{"message": "Comment created"})
 }
 
 // GetComments implements CommentsHandler

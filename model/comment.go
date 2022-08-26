@@ -2,6 +2,10 @@ package model
 
 import "time"
 
+type CommentReqArray struct {
+	CommentReq []CommentReq `json:"comments"`
+}
+
 type CommentReq struct {
 	Id       string   `json:"id" gorm:"primaryKey"`
 	IssueId  string   `json:"issue_id"`

@@ -14,7 +14,7 @@ var (
 )
 
 type IssueService interface {
-	CreateIssue(issueReq *model.IssueReq) error
+	CreateIssue(issueReq *model.IssueReq) (*model.Issue, error)
 	GetDetails(issueId string) (*model.IssueDTO, error)
 	UpdateStatus(issueId string, status string) error
 }
@@ -25,7 +25,7 @@ func NewIssueService() IssueService {
 	return &issueservice{}
 }
 
-func (*issueservice) CreateIssue(issueReq *model.IssueReq) error {
+func (*issueservice) CreateIssue(issueReq *model.IssueReq) (*model.Issue, error) {
 	assigneeID, _ := uuid.NewRandom()
 
 	assignee := &model.Assignee{Id: assigneeID.String(), Email: issueReq.Assignee.Email, UserName: issueReq.Assignee.UserName}
@@ -33,7 +33,7 @@ func (*issueservice) CreateIssue(issueReq *model.IssueReq) error {
 	assigneeId, err := assigneerepo.AddAssignee(assignee)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 	issueId := fmt.Sprintf("%d", time.Now().UnixNano())
 	issue := &model.Issue{Id: issueId,
@@ -43,9 +43,9 @@ func (*issueservice) CreateIssue(issueReq *model.IssueReq) error {
 
 	err = issueRepo.AddIssue(issue)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return issue, err
 }
 
 func (*issueservice) GetDetails(issueId string) (*model.IssueDTO, error) {

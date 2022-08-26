@@ -11,7 +11,6 @@ import (
 
 var (
 	issueService      service.IssueService      = service.NewIssueService()
-	assigneeService   service.AssigneeService   = service.NewAssigneeService()
 	attachmentService service.AttachmentService = service.NewAttachmentService()
 )
 
@@ -35,12 +34,12 @@ func (*issuehandler) CreateIssue(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": err.Error()})
 	}
-	err = issueService.CreateIssue(issueReq)
+	issue, err := issueService.CreateIssue(issueReq)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"message": err.Error()})
 	}
 
-	return c.Status(http.StatusCreated).JSON(fiber.Map{"message": "Issue created"})
+	return c.Status(http.StatusCreated).JSON(issue)
 }
 
 func (*issuehandler) GetDetails(c *fiber.Ctx) error {

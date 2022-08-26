@@ -40,7 +40,7 @@ func (*attachmentrepository) AddAttachment(attachmentReq *model.AttachmentReq) e
 
 	permissions := 0644
 	fileP := "C:/code/minio"
-	file := fmt.Sprintf("%s/%s_%s.txt", fileP, attachmentReq.Title, attachmentReq.IssueId)
+	file := fmt.Sprintf("%s/%s_%s.jpeg", fileP, attachmentReq.Title, attachmentReq.IssueId)
 	err = ioutil.WriteFile(file, base64Text, fs.FileMode(permissions))
 	if err != nil {
 		return err
@@ -62,9 +62,9 @@ func (*attachmentrepository) AddAttachment(attachmentReq *model.AttachmentReq) e
 		log.Printf("Successfully created %s\n", bucketName)
 	}
 
-	objectName := attachmentReq.Title + "_" + attachmentReq.IssueId + ".txt"
+	objectName := attachmentReq.Title + "_" + attachmentReq.IssueId + ".jpeg"
 	filePath := file
-	contentType := "text/plain"
+	contentType := "image/jpeg"
 
 	_, err = minioClient.FPutObject(ctx, bucketName, objectName, filePath, minio.PutObjectOptions{ContentType: contentType})
 	if err != nil {
