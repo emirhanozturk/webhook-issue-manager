@@ -22,6 +22,8 @@ func NewIssueRepository() IssueRepository {
 
 func (*issuerepository) AddIssue(issue *model.Issue) error {
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	if err := db.Create(issue); err.Error != nil {
 		return err.Error
 	}
@@ -33,6 +35,8 @@ func (*issuerepository) AddIssue(issue *model.Issue) error {
 func (*issuerepository) GetDetails(issueId string) (*model.Issue, error) {
 	var issue model.Issue
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	if issueId == "" {
 		fmt.Println("TokenID can not be empty")
 	}
@@ -46,6 +50,8 @@ func (*issuerepository) GetDetails(issueId string) (*model.Issue, error) {
 func (*issuerepository) UpdateStatus(issueId string, status string) error {
 	var issue *model.Issue
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	db.Model(&issue).Where("id = ?", issueId).Update("status", status)
 	return nil
 }

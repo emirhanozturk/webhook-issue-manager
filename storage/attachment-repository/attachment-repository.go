@@ -81,6 +81,8 @@ func (*attachmentrepository) AddAttachment(attachmentReq *model.AttachmentReq) e
 	}
 
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	db.Create(&attachment)
 
 	return nil

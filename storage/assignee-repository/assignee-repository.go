@@ -21,6 +21,8 @@ func NewAssigneeHandler() AssigneeRepository {
 // AddAssignee implements AssigneeRepository
 func (*assignerepository) AddAssignee(assignee *model.Assignee) (string, error) {
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	db.Create(assignee)
 	db.Save(assignee)
 	return assignee.Id, nil
@@ -30,6 +32,8 @@ func (*assignerepository) AddAssignee(assignee *model.Assignee) (string, error) 
 func (*assignerepository) GetAssignee(assigneeId string) (*model.Assignee, error) {
 	var assignee *model.Assignee
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	result := db.Where("id = ?", assigneeId).Find(&assignee)
 	if result.Error != nil {
 		return nil, errors.New("record is not found")

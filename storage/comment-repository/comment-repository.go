@@ -22,6 +22,8 @@ func NewCommentHandler() CommentRepository {
 // CreateComments implements CommentRepository
 func (*commentrepository) AddComments(comment *model.Comment) error {
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	err := db.Create(comment).Error
 	if err != nil {
 		return err
@@ -34,6 +36,8 @@ func (*commentrepository) AddComments(comment *model.Comment) error {
 func (*commentrepository) GetComments(issueId string) ([]*model.Comment, error) {
 	var comment []*model.Comment
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	if issueId == "" {
 		fmt.Println("")
 	}

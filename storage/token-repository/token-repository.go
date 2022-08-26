@@ -22,6 +22,8 @@ func NewTokenRepository() TokenRepository {
 // AddToken implements TokenRepository
 func (*repo) AddToken(token *model.Token) (*model.Token, error) {
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	err := db.Create(token).Error
 	if err != nil {
 		return nil, err
@@ -33,6 +35,8 @@ func (*repo) AddToken(token *model.Token) (*model.Token, error) {
 func (*repo) GetToken(tokenId string) (*model.Token, error) {
 	var token model.Token
 	db := postgres.Inıt()
+	sqlDb, _ := db.DB()
+	defer sqlDb.Close()
 	if tokenId == "" {
 		fmt.Println("TokenID can not be empty")
 	}
